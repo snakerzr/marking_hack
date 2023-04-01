@@ -4,5 +4,5 @@ pandas==1.5.2
 plotly==5.11.0
 matplotlib==3.6.2
 statsmodels==0.13.5
-sklearn==1.2.0
+scikit_learn==1.2.0
 pyod==1.0.9
