@@ -3,7 +3,6 @@ import pickle
 import pandas as pd
 
 import matplotlib.pyplot as plt 
-import seaborn as sns
 
 import plotly.express as px
 import plotly.graph_objs as go
@@ -19,10 +18,10 @@ tab1, tab2 = st.tabs(['Time Series prediction','Anomaly detection'])
 with tab1:
 
     # Define the options for the first select box
-    option1 = ['auto', 'gtin1', 'gtin2', 'gtin3']
+    option1 = ['all', '1248F88441BCFC56', '289AEBCA82877CB1']
 
     # Define the options for the second select box
-    option2 = ['auto', 'region1', 'region2', 'region3']
+    option2 = ['all', '77', '50']
 
     # Define the options for the third select box
     option3 = [1, 2, 3, 4, 5, 6]
@@ -32,26 +31,37 @@ with tab1:
 
     # Add the first select box to the container
     with col1:
-        gtin = st.selectbox('Select gtin', option1, disabled=True)
+        gtin = st.selectbox('Select gtin', option1, disabled=False)
 
     # Add the second select box to the container
     with col2:
-        region = st.selectbox('Select region', option2, disabled=True)
+        region = st.selectbox('Select region', option2, disabled=False)
 
     # Add the third select box to the container
     with col3:
         months = st.selectbox('Select months to predict', option3, index=4, disabled=False)
 
+    
+    # st.write([gtin,region])
+    
 
-    with open('model.pkl', 'rb') as file:
+    end_dict = pd.DataFrame(generate_combs(option1,option2)).T
+
+    # st.write(end_dict)
+    model_path = end_dict.loc[(region,gtin),0]
+    data_path = end_dict.loc[(region,gtin),1]
+    params = end_dict.loc[(region,gtin),2]
+
+    
+    with open(model_path, 'rb') as file:
         model = pickle.load(file)
 
 
     # 'Main procedure: all default, other options are dummy'
-    df = pd.read_csv('combined_data.csv')  
+    df = pd.read_csv(data_path)  
     # df
 
-    preds = predict_timeseries(model, df, months)
+    preds = predict_timeseries(model, df, months,*params)
 
     st.table(pd.DataFrame(preds,columns=['prediction'],index=[x for x in range(months)]))
 

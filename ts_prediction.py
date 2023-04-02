@@ -1,5 +1,36 @@
 import pandas as pd
 
+def generate_combs(option1,option2):
+    model_name = []
+    data_name = []
+    combs = []
+
+    for x in option1:
+        for y in option2:
+            combs.append((y,x))
+            mn = 'models/' + 'model_' + str(y) + '_' + str(x) + '.pkl'
+            dn = 'data/' + 'data_' + str(y) + '_' + str(x) + '.csv'
+            model_name.append(mn)
+            data_name.append(dn)
+
+
+    params = [
+                [25,5,5,5],
+                [15,0,5,5],
+                [15,0,5,5],
+                [15,0,5,5],
+                [15,5,3,3],
+                [15,0,5,5],
+                [15,0,5,5],
+                [25,5,5,5],
+                [15,0,5,5]]
+
+    end_dict = {}    
+    for i in range(len(combs)):
+        end_dict[combs[i]] = [model_name[i],data_name[i],params[i]]
+        
+    return end_dict
+
 def add_features(data, amount_of_lags=1, amount_of_sma=6, rolling_window=4, rolling_step=3):
     modified_data = data.copy()
 
@@ -18,16 +49,17 @@ def add_features(data, amount_of_lags=1, amount_of_sma=6, rolling_window=4, roll
 
 
 
-def predict_timeseries(model, data, amount_of_preds=3):
+def predict_timeseries(model, data, amount_of_preds=3, amount_of_lags=25, amount_of_sma=5, rolling_window=5, rolling_step=5):
 
     temp_data = data.reset_index(drop=True)
     preds = []
 
     for i in range(amount_of_preds):
         temp_data = temp_data.append({'total':0}, ignore_index=True)
-        lagged_data = add_features(temp_data, 25, 5, 5, 5)
+        lagged_data = add_features(temp_data, amount_of_lags, amount_of_sma, rolling_window, rolling_step)
         prediction = model.predict(lagged_data.drop('total', axis=1).tail(1))
         temp_data['total'].iloc[-1] = prediction
         preds.append(float(prediction))
-    #print(temp_data)
+
     return preds
+
