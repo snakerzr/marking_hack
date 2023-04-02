@@ -28,6 +28,11 @@ with tab1:
     with st.expander('Польза для государства и бизнеса'):
         st.markdown(goverment_benefit_)
         st.markdown(business_benefit_)
+        
+    with st.expander('Масштабируемость и улучшения'):
+        st.markdown(scalability_)
+        st.markdown(improvements_)
+    
 
     # Define the options for the first select box
     option1 = ['all', '1248F88441BCFC56', '289AEBCA82877CB1']
@@ -119,11 +124,7 @@ with tab1:
     with st.expander('Predicts'):
         st.image(image1)
         st.image(image2)
-    
-    with st.expander('Масштабируемость и улучшения'):
-        st.markdown(scalability_)
-        st.markdown(improvements_)
-    
+
 with tab2:    
     st.header(header)
     st.caption(subheader)
@@ -138,6 +139,12 @@ with tab2:
     
     with st.expander("Гипотеза"):
         st.markdown(concept)
+        
+    
+    with st.expander('Масштабируемость, улучшения и UI/UX'):
+        st.markdown(scalability)
+        st.markdown(improvements)
+        st.markdown(ui_ux)
         
     #########################
     # separator
@@ -246,10 +253,6 @@ with tab2:
     for x in range(6):
         st.write(' ')
     #########################
-    
-    with st.expander('Масштабируемость, улучшения и UI/UX'):
-        st.markdown(scalability)
-        st.markdown(improvements)
-        st.markdown(ui_ux)
+
     
     
