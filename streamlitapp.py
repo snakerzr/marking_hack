@@ -66,34 +66,26 @@ with tab1:
     st.table(pd.DataFrame(preds,columns=['prediction'],index=[x for x in range(months)]))
 
 
-    x_axis = pd.date_range(start='22/11/2021', freq='1M', periods=12)
-    x_axis_2 = pd.date_range(start='31/10/2022', freq='1M', periods=months+1)
-    preds.insert(0, float(df['total'].tail(1)))
+    x_axis = pd.date_range(start='22/11/2021', freq='1M', periods=13)
+    x_axis_2 = pd.date_range(start='30/11/2022', freq='1M', periods=months)
+    # preds.insert(0, float(df['total'].tail(1)))
+    df = df.append({'total':preds[0]}, ignore_index=True)
 
-
-    # fig = plt.figure(figsize=(18, 8))
-
-    # sns.lineplot(x=x_axis, y=df['total'].tail(12))
-    # sns.lineplot(x=x_axis_2, y=preds)
-    # plt.title('volume distribution')
-    # #plt.tight_layout()
-    # st.pyplot(fig)
-
-
-    fig = px.line(x=x_axis, y=df['total'].tail(12), markers=True)
-    fig.add_scatter(x=x_axis_2, y=preds, showlegend=False) 
+    fig = px.line(x=x_axis, y=df['total'].tail(13), markers=True)
+    
 
     fig.add_trace(go.Scatter(
        x=x_axis,
-       y=df['total'].tail(12),
+       y=df['total'].tail(13),
        line=dict(color="#636EFA"),
        name="True"))
 
     fig.add_trace(go.Scatter(
        x=x_axis_2,
        y=preds,
-       line=dict(color="orange"),
-       name="Predicted"))
+       line=dict(color="orange", dash='dot'),
+       name="Predicted",
+       mode='lines+markers'))
 
 
     fig.update_layout(
@@ -110,20 +102,31 @@ with tab1:
     
 with tab2:    
     st.header(header)
+    st.caption(subheader)
+    with st.expander('Для кого, польза для экономики, польза для "людей"'):
+        st.markdown(application_fields)
+        st.markdown(economy_benefit)
+        st.markdown(consumer_benefit)
+    
+    with st.expander('Признаки коротко'):
+        st.markdown(features_short)
+    
+    
     with st.expander("Гипотеза"):
-        st.markdown(text)
+        st.markdown(concept)
+        
+    st.header('Основная часть/функционал')
         
     prid_gtin = pd.read_csv('prid_gtin.csv',index_col=0)
-    st.write('10 unique prid gtin pairs')
+    st.write('Для демонстрации есть 15 уникальных пар `prid`-`gtin`')
     col1, col2 = st.columns(2)
-    prid_gtin_selected = col1.selectbox('Select prid+gtin',options=[x for x in range(10)])
-    # if col2.button('Next'):
-    #     prid_gtin_selected += 1
+    prid_gtin_selected = col1.selectbox('Select prid+gtin',options=[x for x in range(15)])
+
     prid = prid_gtin.iloc[prid_gtin_selected,0]
     gtin = prid_gtin.iloc[prid_gtin_selected,1]
-    # prid_gtin.iloc[prid_gtin_selected]
-    st.write(prid)
-    st.write(gtin)
+
+    st.metric('prid',prid)
+    st.metric('gtin',gtin)
     
     csv1 = pd.read_csv('1.csv',index_col=0)
     csv2 = pd.read_csv('2.csv',index_col=0)
@@ -135,28 +138,58 @@ with tab2:
     _,q_df = quantile_transform(df)
     ensemble_outliers,ensemble_mean_scores, ensemble_median_scores = train_ensemble(estimators,q_df,threshold=0.75)
     
+    with st.expander('Описание предобработки данных и код'):
+        st.markdown(preprocessing_description)
+        st.code(preprocessing_code)
+    
     st.header('General info')
-    st.write(len(df))
+    st.write('Здесь может выводиться какая-то общая информация о паре `prid`-`gtin`')
+    st.write('Кол-во записей в датасете: '+str(len(df)))
     
     
     st.header('MAD on seasonal decomposition residuals')
+    
+    with st.expander('Описание метода и код'):
+        st.markdown(mad_description)
+        st.code(mad_code)
+    
     mad_threshold = st.slider('Number of min anomaly features',1,5,step=1,value=4)
     
+    st.caption('В каких признаках аномалия')
     mad_outliers[mad_outliers['sum_resid_mad']>=mad_threshold]
+    st.caption('Строки с аномалиями')
     df.iloc[mad_outliers[mad_outliers['sum_resid_mad']>3].index]
     
     st.header('Isolation forest')
+    
+    with st.expander('Описание метода и код'):
+        st.markdown(iforest_description)
+        st.code(iforest_code)
+        
     if_threshold = st.slider('Isolation Forest probability threshold',0.5,1.,step=0.01,value=0.75)
+    st.caption('Строки с аномалиями')
     df.loc[iforest_proba>if_threshold]
     
     st.header('Ensemble outliers')
+    
+    with st.expander('Описание метода и код'):
+        st.markdown(ensemble_description)
+        st.code(ensemble_code)    
+    
+    st.caption('Модели в ансамбле')
     for model in estimators:
         st.write(model)
     mode = st.selectbox('Select score averaging mode',['mean','median'])
     en_threshold = st.slider('Ensemble probability threshold',0.5,1.,step=0.01,value=0.75)
+    st.caption('Строки с аномалиями')
     if mode == 'mean':
         df.loc[ensemble_mean_scores>en_threshold]
     elif mode == 'median':
         df.loc[ensemble_median_scores>en_threshold]
+        
+    with st.expander('Масштабируемость, улучшения и UI/UX'):
+        st.markdown(scalability)
+        st.markdown(improvements)
+        st.markdown(ui_ux)
     
     
