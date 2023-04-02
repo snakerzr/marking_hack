@@ -8,14 +8,26 @@ import plotly.express as px
 import plotly.graph_objs as go
 
 import streamlit as st
+from PIL import Image
 
 from ts_prediction import *
 from anomaly import * 
 
 
+
+st.header('Lucky Random | Marking Hack')
+st.caption('02.04.2023')
+
 tab1, tab2 = st.tabs(['Time Series prediction','Anomaly detection'])
 
 with tab1:
+    st.header(header_)
+    with st.expander('Концепция'):
+        st.markdown(general_info_)
+        
+    with st.expander('Польза для государства и бизнеса'):
+        st.markdown(goverment_benefit_)
+        st.markdown(business_benefit_)
 
     # Define the options for the first select box
     option1 = ['all', '1248F88441BCFC56', '289AEBCA82877CB1']
@@ -89,7 +101,7 @@ with tab1:
 
 
     fig.update_layout(
-       title="Outlet Distribution",
+       title="Prediction plot",
        xaxis_title="date",
        yaxis_title="sum",
        legend_title="legend",
@@ -98,7 +110,19 @@ with tab1:
 
     # fig.show()
     st.plotly_chart(fig, use_container_width=True)
+    
+    
 
+    image1 = Image.open('data/1.jpg')
+    image2 = Image.open('data/2.jpg')
+    
+    with st.expander('Predicts'):
+        st.image(image1)
+        st.image(image2)
+    
+    with st.expander('Масштабируемость и улучшения'):
+        st.markdown(scalability_)
+        st.markdown(improvements_)
     
 with tab2:    
     st.header(header)

@@ -6,3 +6,4 @@ matplotlib==3.6.2
 statsmodels==0.13.5
 scikit_learn==1.2.0
 pyod==1.0.9
+Pillow==9.4.0
