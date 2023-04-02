@@ -139,10 +139,17 @@ with tab2:
     with st.expander("Гипотеза"):
         st.markdown(concept)
         
+    #########################
+    # separator
+    for x in range(6):
+        st.write(' ')
+    #########################
+        
     st.header('Основная часть/функционал')
         
     prid_gtin = pd.read_csv('prid_gtin.csv',index_col=0)
     st.write('Для демонстрации есть 15 уникальных пар `prid`-`gtin`')
+    st.table(prid_gtin)
     col1, col2 = st.columns(2)
     prid_gtin_selected = col1.selectbox('Select prid+gtin',options=[x for x in range(15)])
 
@@ -166,10 +173,21 @@ with tab2:
         st.markdown(preprocessing_description)
         st.code(preprocessing_code)
     
+    #########################
+    # separator
+    for x in range(6):
+        st.write(' ')
+    #########################
+    
     st.header('General info')
     st.write('Здесь может выводиться какая-то общая информация о паре `prid`-`gtin`')
     st.write('Кол-во записей в датасете: '+str(len(df)))
-    
+   
+    #########################
+    # separator
+    for x in range(6):
+        st.write(' ')
+    #########################
     
     st.header('MAD on seasonal decomposition residuals')
     
@@ -183,7 +201,13 @@ with tab2:
     mad_outliers[mad_outliers['sum_resid_mad']>=mad_threshold]
     st.caption('Строки с аномалиями')
     df.iloc[mad_outliers[mad_outliers['sum_resid_mad']>3].index]
-    
+
+    #########################
+    # separator
+    for x in range(6):
+        st.write(' ')
+    #########################
+
     st.header('Isolation forest')
     
     with st.expander('Описание метода и код'):
@@ -193,6 +217,12 @@ with tab2:
     if_threshold = st.slider('Isolation Forest probability threshold',0.5,1.,step=0.01,value=0.75)
     st.caption('Строки с аномалиями')
     df.loc[iforest_proba>if_threshold]
+    
+    #########################
+    # separator
+    for x in range(6):
+        st.write(' ')
+    #########################
     
     st.header('Ensemble outliers')
     
@@ -210,7 +240,13 @@ with tab2:
         df.loc[ensemble_mean_scores>en_threshold]
     elif mode == 'median':
         df.loc[ensemble_median_scores>en_threshold]
-        
+    
+    #########################
+    # separator
+    for x in range(6):
+        st.write(' ')
+    #########################
+    
     with st.expander('Масштабируемость, улучшения и UI/UX'):
         st.markdown(scalability)
         st.markdown(improvements)
