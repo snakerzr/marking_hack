@@ -171,6 +171,8 @@ with tab2:
     csv3 = pd.read_csv('3.csv',index_col=0)
 
     df = preprocess(prid,gtin,csv1,csv2,csv3, fillna=True)
+    if st.button('Display raw df'):
+        st.write(df)
     mad_outliers = detect_outliers_on_residuals_with_mad(df)
     iforest_proba,iforest_outliers = isolation_forest_pred(df)
     _,q_df = quantile_transform(df)
