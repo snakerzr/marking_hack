@@ -29,9 +29,9 @@ with tab1:
         st.markdown(goverment_benefit_)
         st.markdown(business_benefit_)
         
-    with st.expander('Масштабируемость и улучшения'):
-        st.markdown(scalability_)
-        st.markdown(improvements_)
+    # with st.expander('Масштабируемость и улучшения'):
+    #     st.markdown(scalability_)
+    #     st.markdown(improvements_)
     
 
     # Define the options for the first select box
@@ -41,7 +41,7 @@ with tab1:
     option2 = ['all', '77', '50']
 
     # Define the options for the third select box
-    option3 = [1, 2, 3, 4, 5, 6]
+    option3 = [2, 3, 4, 5, 6]
 
     # Create a container to hold the three select boxes in a row
     col1, col2, col3 = st.columns(3)
@@ -121,9 +121,9 @@ with tab1:
     image1 = Image.open('data/1.jpg')
     image2 = Image.open('data/2.jpg')
     
-    with st.expander('Predicts'):
-        st.image(image1)
-        st.image(image2)
+    # with st.expander('Predicts'):
+    #     st.image(image1)
+    #     st.image(image2)
 
 with tab2:    
     st.header(header)
@@ -155,10 +155,11 @@ with tab2:
     st.header('Основная часть/функционал')
         
     prid_gtin = pd.read_csv('prid_gtin.csv',index_col=0)
-    st.write('Для демонстрации есть 15 уникальных пар `prid`-`gtin`')
+    prid_gtin = prid_gtin.drop(index=[12])
+    st.write(f'Для демонстрации есть {len(prid_gtin)} уникальных пар `prid`-`gtin`')
     st.table(prid_gtin)
     col1, col2 = st.columns(2)
-    prid_gtin_selected = col1.selectbox('Select prid+gtin',options=[x for x in range(15)])
+    prid_gtin_selected = col1.selectbox('Select prid+gtin',options=[x for x in range(len(prid_gtin))]) # 12
 
     prid = prid_gtin.iloc[prid_gtin_selected,0]
     gtin = prid_gtin.iloc[prid_gtin_selected,1]
